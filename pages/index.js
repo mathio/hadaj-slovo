@@ -14,6 +14,19 @@ const fetchWords = async (words = [], id = "") => {
   return data;
 };
 
+const saveGameCookie = (value) => {
+  document.cookie = `game=${JSON.stringify(value)};`;
+};
+
+const readGameCookie = () => {
+  const match = document.cookie.match(/game=([^;]+)/);
+  let data = {};
+  try {
+    data = JSON.parse(match && match[1]);
+  } catch (e) {}
+  return data || {};
+};
+
 export default function IndexPage() {
   const [gameId, setGameId] = useState(null);
   const [error, setError] = useState(false);
@@ -28,18 +41,9 @@ export default function IndexPage() {
   const gameEnded = winner || looser;
 
   useEffect(() => {
-    const savedGame = window.localStorage.getItem("game");
-
-    let words;
-    let id;
-    try {
-      const savedData = JSON.parse(savedGame);
-      id = savedData.id;
-      words = savedData.words;
-      setGameId(id);
-      setPreviousWords(words);
-    } catch (e) {}
-
+    const { id, words = [] } = readGameCookie();
+    setGameId(id);
+    setPreviousWords(words);
     loadGame(id, words);
   }, []);
 
@@ -56,7 +60,7 @@ export default function IndexPage() {
       const { results, answer } = await fetchWords(words, id);
       setResults(results);
       setAnswer(answer);
-      window.localStorage.setItem("game", JSON.stringify({ id, words }));
+      saveGameCookie({ id, words });
     } else {
       const { id } = await fetchWords();
       setGameId(id);
@@ -64,7 +68,7 @@ export default function IndexPage() {
   };
 
   const resetGame = () => {
-    window.localStorage.removeItem("game");
+    saveGameCookie({});
     setResults({});
     setPreviousWords([]);
     setWord("");
@@ -91,10 +95,7 @@ export default function IndexPage() {
       await loadGame(gameId, allWords);
     }
 
-    window.localStorage.setItem(
-      "game",
-      JSON.stringify({ words: allWords, id: gameId })
-    );
+    saveGameCookie({ words: allWords, id: gameId });
   };
 
   const handleKeyClick = useCallback(
