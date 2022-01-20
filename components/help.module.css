@@ -14,8 +14,12 @@
 }
 
 .help p,
-.help li {
+.help > ul > li {
   margin: 20px 0;
+}
+
+.help > ul > li > ul > li {
+  margin: 10px 0;
 }
 
 .help ul {
@@ -34,4 +38,11 @@
   text-decoration: underline;
   color: cornflowerblue;
   cursor: pointer;
+}
+
+.message {
+  background: black;
+  color: white;
+  padding: 2px 4px;
+  border-radius: 4px;
 }
