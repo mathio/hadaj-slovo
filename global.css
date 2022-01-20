@@ -1,0 +1,26 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#__next {
+  height: 100%;
+}
+
+body {
+  font-family: sans-serif;
+}
+
+h1 {
+  padding: 5px 0;
+  font-size: 20px;
+  line-height: 28px;
+  text-align: center;
+}
+
+#__next-prerender-indicator {
+  display: none !important;
+}

@@ -1,0 +1,37 @@
+.wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 9;
+  width: 100%;
+  background: white;
+}
+
+.help {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.help p,
+.help li {
+  margin: 20px 0;
+}
+
+.help ul {
+  margin-left: 20px;
+}
+
+.help li span {
+  padding: 2px 4px;
+}
+
+.close {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  line-height: 28px;
+  text-decoration: underline;
+  color: cornflowerblue;
+  cursor: pointer;
+}

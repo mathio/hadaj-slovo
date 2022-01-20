@@ -1,0 +1,35 @@
+.wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+.header {
+  width: 100%;
+  background: white;
+  border-bottom: 1px lightgray solid;
+  margin-bottom: 5px;
+}
+
+.resetLink,
+.helpLink {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  line-height: 28px;
+  text-decoration: underline;
+  color: cornflowerblue;
+  cursor: pointer;
+}
+
+.resetLink {
+  left: 10px;
+  right: auto;
+}
+
+.message {
+  background: black;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 18px;
+}
