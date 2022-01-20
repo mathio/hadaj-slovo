@@ -13,7 +13,7 @@ export const Help = ({ close }) => (
         Na každý pokus musíš hádať 5 písmenové slovo -{" "}
         <em>zadaj slovo a stlač enter</em>.
       </p>
-      <p>Hádať môžeš iba platné slová. Databáza obsahuje takmer 3000 slov.</p>
+      <p>Hádať môžeš iba platné slová. Databáza obsahuje takmer 3500 slov.</p>
       <p>Po každom pokuse ti ukážeme ako blízko bol tvoj tip:</p>
       <ul>
         <li>

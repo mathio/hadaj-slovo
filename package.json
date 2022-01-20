@@ -5,7 +5,8 @@
     "dev": "next",
     "build": "next build",
     "start": "next start -p $PORT",
-    "post-update": "yarn upgrade --latest"
+    "post-update": "yarn upgrade --latest",
+    "download-dictionary": "node scripts/dictionary.mjs"
   },
   "engines": {
     "node": "14",
@@ -18,5 +19,8 @@
   },
   "license": "MIT",
   "keywords": [],
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "prettier": "^2.5.1"
+  }
 }

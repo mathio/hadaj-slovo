@@ -23,7 +23,7 @@ export default function IndexPage() {
   const [answer, setAnswer] = useState("");
   const [word, setWord] = useState("");
 
-  const winner = Object.values(results).includes("22222");
+  const winner = results && Object.values(results).includes("22222");
   const looser = previousWords.length === maxGuesses;
   const gameEnded = winner || looser;
 
@@ -74,7 +74,7 @@ export default function IndexPage() {
 
   const submitWord = async () => {
     const {
-      results: { [word]: result }
+      results: { [word]: result },
     } = await fetchWords([word], gameId);
 
     if (result === "xxxxx") {
