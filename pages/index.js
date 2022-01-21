@@ -15,7 +15,9 @@ const fetchWords = async (words = [], id = "") => {
 };
 
 const saveGameCookie = (value) => {
-  document.cookie = `game=${JSON.stringify(value)};`;
+  document.cookie = `game=${JSON.stringify(value)};${
+    window.location.href.match("localhost") ? "" : "SameSite=None;Secure;"
+  }`;
 };
 
 const readGameCookie = () => {
