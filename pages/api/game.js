@@ -31,7 +31,7 @@ const gameRoute = (req, res) => {
 
   if (!id) {
     return res.json({
-      id: Object.keys(database)[getRandom(0, Object.keys(database).length - 1)]
+      id: Object.keys(database)[getRandom(0, Object.keys(database).length - 1)],
     });
   }
 
@@ -52,7 +52,11 @@ const gameRoute = (req, res) => {
   res.json({
     id,
     results,
-    answer: wordsArray.length === maxGuesses ? answer : undefined
+    answer:
+      Object.values(results).includes("22222") ||
+      wordsArray.length >= maxGuesses
+        ? answer
+        : undefined,
   });
 };
 

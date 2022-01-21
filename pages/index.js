@@ -37,7 +37,7 @@ export default function IndexPage() {
   const [word, setWord] = useState("");
 
   const winner = results && Object.values(results).includes("22222");
-  const looser = previousWords.length === maxGuesses;
+  const looser = previousWords.length === maxGuesses || !!answer;
   const gameEnded = winner || looser;
 
   useEffect(() => {
@@ -67,8 +67,25 @@ export default function IndexPage() {
     }
   };
 
-  const resetGame = () => {
+  const endGame = async () => {
+    if (!confirm("Naozaj?")) {
+      return;
+    }
+
+    const words = [...previousWords, "", "", "", "", "", ""].slice(
+      0,
+      maxGuesses
+    );
+    setPreviousWords(words);
+    saveGameCookie({ id: gameId, words });
+    const { answer } = await fetchWords(words, gameId);
+
+    setAnswer(answer);
+  };
+
+  const startNewGame = () => {
     saveGameCookie({});
+    setAnswer("");
     setResults({});
     setPreviousWords([]);
     setWord("");
@@ -98,11 +115,15 @@ export default function IndexPage() {
     saveGameCookie({ words: allWords, id: gameId });
   };
 
+  const openJulsSavba = () => {
+    window.open(`https://slovnik.juls.savba.sk/?w=${answer}`);
+  };
+
   const handleKeyClick = useCallback(
     (key) => {
       if (gameEnded) {
         if (key === "enter") {
-          resetGame();
+          endGame();
         }
         return;
       }
@@ -126,15 +147,22 @@ export default function IndexPage() {
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
-        <a onClick={resetGame} className={styles.resetLink}>
-          Nová hra
-        </a>
+        {gameEnded ? (
+          <a onClick={startNewGame} className={styles.newLink}>
+            Nová hra
+          </a>
+        ) : previousWords.length > 0 ? (
+          <a onClick={endGame} className={styles.endLink}>
+            Ukončiť hru
+          </a>
+        ) : null}
         <h1>
-          {winner ? (
-            <span className={styles.message}>Výborne 🤘</span>
-          ) : looser ? (
-            <span className={styles.message}>
-              😐 {`${answer}`.toUpperCase()} 😐
+          {gameEnded ? (
+            <span className={styles.message} onClick={openJulsSavba}>
+              {winner ? "Výborne 🤘" : `😐 ${`${answer}`.toUpperCase()} 😐`}
+              <span className={styles.tooltip}>
+                nepoznáš slovo? <u>pozri do slovníka</u>
+              </span>
             </span>
           ) : (
             "Hádaj slovo"
@@ -149,6 +177,7 @@ export default function IndexPage() {
         results={results}
         current={word}
         error={error}
+        gameEnded={gameEnded}
       />
 
       <Keyboard onClick={handleKeyClick} results={results} />

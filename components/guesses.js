@@ -1,9 +1,12 @@
 import styles from "./guesses.module.css";
 import { highlightStyles, maxGuesses } from "../utils/constants";
 
-const GuessRow = ({ word = "", results = {}, error }) => {
+const GuessRow = ({ word = "", results = {}, error, gameEnded }) => {
   const placeholder = [0, 1, 2, 3, 4];
   const getStyle = (word, index) => {
+    if (word[index] === undefined) {
+      return { opacity: 0.25 };
+    }
     const styleIndex = parseInt(
       (results[word] && results[word][index]) || -1,
       10
@@ -29,7 +32,7 @@ const GuessRow = ({ word = "", results = {}, error }) => {
   );
 };
 
-export const Guesses = ({ words, results = {}, current, error }) => {
+export const Guesses = ({ words, results = {}, current, error, gameEnded }) => {
   const emptyRows = ["", "", "", "", ""].slice(
     0,
     Math.max(0, maxGuesses - 1 - words.length)
@@ -40,9 +43,11 @@ export const Guesses = ({ words, results = {}, current, error }) => {
       {words.map((word, index) => (
         <GuessRow key={index} word={word} results={results} />
       ))}
-      {words.length < maxGuesses && <GuessRow word={current} error={error} />}
+      {words.length < maxGuesses && (
+        <GuessRow word={current} error={error} gameEnded={gameEnded} />
+      )}
       {emptyRows.map((_, index) => (
-        <GuessRow key={index} />
+        <GuessRow key={index} gameEnded={gameEnded} />
       ))}
     </div>
   );
