@@ -60,6 +60,7 @@ export default function IndexPage() {
   const loadGame = async (id, words) => {
     if (id && words.length > 0) {
       const { results, answer } = await fetchWords(words, id);
+      console.log("answer", results, answer);
       setResults(results);
       setAnswer(answer);
       saveGameCookie({ id, words });
@@ -96,23 +97,22 @@ export default function IndexPage() {
   };
 
   const submitWord = async () => {
+    const allWords = [...previousWords, word];
+
     const {
       results: { [word]: result },
-    } = await fetchWords([word], gameId);
+      answer,
+    } = await fetchWords(allWords, gameId);
 
     if (result === "xxxxx") {
       setError(true);
       return;
     }
 
-    const allWords = [...previousWords, word];
     setPreviousWords(allWords);
     setResults({ ...results, [word]: result });
     setWord("");
-
-    if (allWords.length === maxGuesses) {
-      await loadGame(gameId, allWords);
-    }
+    setAnswer(answer);
 
     saveGameCookie({ words: allWords, id: gameId });
   };
@@ -125,7 +125,7 @@ export default function IndexPage() {
     (key) => {
       if (gameEnded) {
         if (key === "enter") {
-          endGame();
+          startNewGame();
         }
         return;
       }

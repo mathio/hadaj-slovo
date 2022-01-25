@@ -89,6 +89,14 @@ export const Help = ({ close }) => (
         </a>
         .
       </p>
+      <p>
+        <a href="https://hits.seeyoufarm.com/api/count/graph/dailyhits.svg?url=https://slovo.w2.sk">
+          <img
+            src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fslovo.w2.sk&count_bg=%23FF8C00&title_bg=%23007F00&icon=&icon_color=%23E7E7E7&title=po%C4%8Det+hr%C3%A1%C4%8Dov&edge_flat=false"
+            alt="počet hráčov"
+          />
+        </a>
+      </p>
     </div>
   </div>
 );
