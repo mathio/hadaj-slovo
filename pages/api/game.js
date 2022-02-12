@@ -12,13 +12,21 @@ const validateWord = (word, answer) => {
     return "xxxxx";
   }
 
+  const totals = {};
+  answer.split("").forEach((letter, index) => {
+    if (letter != word[index]) {
+      totals[letter] = totals[letter] + 1 || 1; // count letters in answer not guessed correctly
+    }
+  });
+
   return word
     .split("")
     .map((letter, index) => {
       if (letter === answer[index]) {
         return "2";
       }
-      if (answer.includes(letter)) {
+      if (totals[letter]) {
+        totals[letter]--; // cannot provide more yellow clues than there are copies of the letter in the answer
         return "1";
       }
       return "0";
