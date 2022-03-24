@@ -75,6 +75,10 @@ export const Help = ({ close }) => (
         </li>
       </ul>
       <p>
+        Hrať môžeš s diakritikou (ťažšia hra), alebo bez diakritiky (ľahšia
+        hra).
+      </p>
+      <p>
         Inšpirované hrou{" "}
         <a href="https://www.powerlanguage.co.uk/wordle/" target="_blank">
           Wordle

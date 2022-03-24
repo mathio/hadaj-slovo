@@ -1,6 +1,7 @@
 import { useEffect, useCallback, useState } from "react";
 import styles from "./keyboard.module.css";
 import { highlightStyles } from "../utils/constants";
+import { removeAccents } from "../utils/remove-accents";
 
 const compose = (key, accent) => {
   if (accent === "makcen") {
@@ -46,18 +47,21 @@ const compose = (key, accent) => {
   return key;
 };
 
-export const Keyboard = ({ onClick, results }) => {
+export const Keyboard = ({ onClick, results, supportAccents }) => {
   const [composing, setComposing] = useState(null);
   const style = { color: "white", background: "black", fontWeight: "bold" };
   const backspaceKey = { key: "←", code: "backspace", style };
   const enterKey = { key: "⏎", code: "enter", style };
-  const rows = [
-    ["ľ", "š", "č", "ť", "ž", "ĺ", "ŕ", "ď", "ň"],
-    ["ý", "á", "í", "é", "ó", "ú", "ô", "ä"],
+  const basicKeys = [
     ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
     ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
-    [enterKey, "Z", "X", "C", "V", "B", "N", "M", backspaceKey]
+    [enterKey, "Z", "X", "C", "V", "B", "N", "M", backspaceKey],
   ];
+  const accentedKeys = [
+    ["ľ", "š", "č", "ť", "ž", "ĺ", "ŕ", "ď", "ň"],
+    ["ý", "á", "í", "é", "ó", "ú", "ô", "ä"],
+  ];
+  const rows = !supportAccents ? basicKeys : [...accentedKeys, ...basicKeys];
 
   const handleKey = useCallback(
     (code) => {
@@ -68,7 +72,7 @@ export const Keyboard = ({ onClick, results }) => {
 
   const keyboardDown = useCallback(
     (e) => {
-      if (e.key === "Dead" && e.code === "Equal") {
+      if (supportAccents && e.key === "Dead" && e.code === "Equal") {
         setComposing(e.shiftKey ? "makcen" : "dlzen");
       }
       if (e.key.length === 1 || e.key === "Enter" || e.key === "Backspace") {
@@ -91,9 +95,10 @@ export const Keyboard = ({ onClick, results }) => {
     let styleIndex = -1;
     if (results) {
       Object.entries(results).forEach(([word, result]) => {
-        if (word.includes(key.toLowerCase())) {
+        const sanitizedWord = supportAccents ? word : removeAccents(word);
+        if (sanitizedWord.includes(key.toLowerCase())) {
           styleIndex = Math.max(
-            parseInt(result[word.indexOf(key.toLowerCase())], 10),
+            parseInt(result[sanitizedWord.indexOf(key.toLowerCase())], 10),
             styleIndex
           );
         }

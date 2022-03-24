@@ -32,14 +32,21 @@ const GuessRow = ({ word = "", results = {}, error, gameEnded }) => {
   );
 };
 
-export const Guesses = ({ words, results = {}, current, error, gameEnded }) => {
+export const Guesses = ({
+  words,
+  results = {},
+  current,
+  error,
+  gameEnded,
+  supportAccents = false,
+}) => {
   const emptyRows = ["", "", "", "", ""].slice(
     0,
     Math.max(0, maxGuesses - 1 - words.length)
   );
 
   return (
-    <div className={styles.wrapper}>
+    <div className={supportAccents ? styles.wrapperSmall : styles.wrapper}>
       {words.map((word, index) => (
         <GuessRow key={index} word={word} results={results} />
       ))}

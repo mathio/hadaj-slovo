@@ -5,13 +5,13 @@ import { Help } from "../components/help";
 import { maxGuesses } from "../utils/constants";
 import styles from "./index.module.css";
 
-const fetchWords = async (words = [], id = "") => {
+const fetchWords = async (words = [], id = "", supportAccents = false) => {
   const cf = window.location.search.substring(1);
+  const dia = supportAccents ? "dia=1" : "";
   const response = await fetch(
-    `/api/game?id=${id}&words=${words.join(",")}&${cf}`
+    `/api/game?id=${id}&words=${words.join(",")}&${dia}&${cf}`
   );
-  const data = await response.json();
-  return data;
+  return await response.json();
 };
 
 const saveGameCookie = (value) => {
@@ -37,6 +37,7 @@ export default function IndexPage() {
   const [previousWords, setPreviousWords] = useState([]);
   const [answer, setAnswer] = useState("");
   const [word, setWord] = useState("");
+  const [supportAccents, setSupportAccents] = useState(false);
 
   const winner = results && Object.values(results).includes("22222");
   const looser = previousWords.length === maxGuesses || !!answer;
@@ -58,14 +59,17 @@ export default function IndexPage() {
   }, [error]);
 
   const loadGame = async (id, words) => {
+    const dia = document.cookie.includes("dia=true");
+    setSupportAccents(dia);
+
     if (id && words.length > 0) {
-      const { results, answer } = await fetchWords(words, id);
+      const { results, answer } = await fetchWords(words, id, dia);
       console.log("answer", results, answer);
       setResults(results);
       setAnswer(answer);
       saveGameCookie({ id, words });
     } else {
-      const { id } = await fetchWords();
+      const { id } = await fetchWords([], "", dia);
       setGameId(id);
     }
   };
@@ -81,7 +85,7 @@ export default function IndexPage() {
     );
     setPreviousWords(words);
     saveGameCookie({ id: gameId, words });
-    const { answer } = await fetchWords(words, gameId);
+    const { answer } = await fetchWords(words, gameId, supportAccents);
 
     setAnswer(answer);
   };
@@ -96,13 +100,20 @@ export default function IndexPage() {
     loadGame();
   };
 
+  const switchAccentSupport = () => {
+    const newSupportAccents = !supportAccents;
+    document.cookie = `dia=${newSupportAccents ? "true" : "false"}`;
+    setSupportAccents(newSupportAccents);
+    startNewGame();
+  };
+
   const submitWord = async () => {
     const allWords = [...previousWords, word];
 
     const {
       results: { [word]: result },
       answer,
-    } = await fetchWords(allWords, gameId);
+    } = await fetchWords(allWords, gameId, supportAccents);
 
     if (result === "xxxxx") {
       setError(true);
@@ -180,9 +191,22 @@ export default function IndexPage() {
         current={word}
         error={error}
         gameEnded={gameEnded}
+        supportAccents={supportAccents}
       />
-
-      <Keyboard onClick={handleKeyClick} results={results} />
+      {gameEnded || previousWords.length === 0 ? (
+        <div className={styles.diaLink}>
+          {!supportAccents ? (
+            <a onClick={switchAccentSupport}>Hrať s diakritikou</a>
+          ) : (
+            <a onClick={switchAccentSupport}>Hrať bez diakritiky</a>
+          )}
+        </div>
+      ) : null}
+      <Keyboard
+        onClick={handleKeyClick}
+        results={results}
+        supportAccents={supportAccents}
+      />
     </div>
   );
 }

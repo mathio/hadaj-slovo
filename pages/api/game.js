@@ -1,4 +1,5 @@
 import { maxGuesses } from "../../utils/constants";
+import { removeAccents } from "../../utils/remove-accents";
 
 // https://github.com/BramboraSK/slovnik-slovenskeho-jazyka
 const database = require("./words.json");
@@ -7,18 +8,25 @@ function getRandom(min, max) {
   return Math.round(Math.random() * (max - min) + min);
 }
 
-const validateWord = (word, answer) => {
-  if (!Object.values(database).includes(word)) {
+const validateWord = (word, answer, supportAccents = false) => {
+  const sanitizedWord = supportAccents ? word : removeAccents(word);
+  const sanitizedAnswer = supportAccents ? answer : removeAccents(answer);
+
+  if (
+    !Object.values(database)
+      .map((value) => (supportAccents ? value : removeAccents(value)))
+      .includes(sanitizedWord)
+  ) {
     return "xxxxx";
   }
 
-  return word
+  return sanitizedWord
     .split("")
     .map((letter, index) => {
-      if (letter === answer[index]) {
+      if (letter === sanitizedAnswer[index]) {
         return "2";
       }
-      if (answer.includes(letter)) {
+      if (sanitizedAnswer.includes(letter)) {
         return "1";
       }
       return "0";
@@ -27,7 +35,7 @@ const validateWord = (word, answer) => {
 };
 
 const gameRoute = (req, res) => {
-  const { id, words = "" } = req.query || {};
+  const { id, words = "", dia: supportAccents = false } = req.query || {};
 
   if (!id) {
     return res.json({
@@ -46,7 +54,7 @@ const gameRoute = (req, res) => {
   const wordsArray = words.toLowerCase().split(",");
 
   wordsArray.forEach((word) => {
-    results[word] = validateWord(word, answer);
+    results[word] = validateWord(word, answer, supportAccents);
   });
 
   res.json({
