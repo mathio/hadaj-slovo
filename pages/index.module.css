@@ -11,6 +11,7 @@
 }
 
 .newLink,
+.changeLink,
 .endLink,
 .helpLink {
   position: absolute;
@@ -24,6 +25,7 @@
 }
 
 .newLink,
+.changeLink,
 .endLink {
   left: 10px;
   right: auto;
@@ -32,6 +34,10 @@
 
 .endLink {
   color: #e00;
+}
+
+.changeLink {
+  color: #444;
 }
 
 .diaLink {
@@ -79,4 +85,29 @@
   top: -6px;
   left: 50%;
   margin-left: -6px;
+}
+
+.menu {
+  width: 260px;
+  margin: 0 auto;
+  list-style: none;
+  text-align: center;
+}
+
+.menu li {
+  margin: 10px 0;
+}
+
+.menu p {
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px #aaa solid;
+}
+
+.menu button {
+  padding: 10px 0;
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  border: none;
 }

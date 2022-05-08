@@ -1,19 +1,43 @@
-import { maxGuesses } from "../../utils/constants";
+import {
+  LANG_EN,
+  LANG_SK,
+  maxGuesses,
+  supportedLanguages,
+} from "../../utils/constants";
 import { removeAccents } from "../../utils/remove-accents";
 
-// https://github.com/BramboraSK/slovnik-slovenskeho-jazyka
-const database = require("./words.json");
+const languageDatabase = {
+  [LANG_SK]: {
+    possibleAnswers: require("../../resources/sk/answers.json"), // https://github.com/BramboraSK/slovnik-slovenskeho-jazyka
+    otherKnownWords: {},
+  },
+  [LANG_EN]: {
+    possibleAnswers: require("../../resources/en/answers.json"),
+    otherKnownWords: require("../../resources/en/other.json"),
+  },
+};
 
-function getRandom(min, max) {
+const getRandom = (min, max) => {
   return Math.round(Math.random() * (max - min) + min);
-}
+};
 
-const validateWord = (word, answer, supportAccents = false) => {
+const getRandomId = ({ possibleAnswers }) =>
+  Object.keys(possibleAnswers)[
+    getRandom(0, Object.keys(possibleAnswers).length - 1)
+  ];
+
+const validateWord = (
+  { possibleAnswers, otherKnownWords },
+  word,
+  answer,
+  supportAccents = false
+) => {
+  const databaseArray = [...Object.values(possibleAnswers), otherKnownWords];
   const sanitizedWord = supportAccents ? word : removeAccents(word);
   const sanitizedAnswer = supportAccents ? answer : removeAccents(answer);
 
   if (
-    !Object.values(database)
+    !databaseArray
       .map((value) => (supportAccents ? value : removeAccents(value)))
       .includes(sanitizedWord)
   ) {
@@ -35,18 +59,29 @@ const validateWord = (word, answer, supportAccents = false) => {
 };
 
 const gameRoute = (req, res) => {
-  const { id, words = "", dia: supportAccents = false } = req.query || {};
+  const {
+    id,
+    words = "",
+    dia: supportAccents = false,
+    lang: language = "sk",
+  } = req.query || {};
+
+  if (!supportedLanguages.includes(language)) {
+    return res.status(400).json({ error: "language not supported" });
+  }
+
+  const database = languageDatabase[language];
 
   if (!id) {
     return res.json({
-      id: Object.keys(database)[getRandom(0, Object.keys(database).length - 1)],
+      id: getRandomId(database),
     });
   }
 
-  const answer = database[id];
+  const answer = database.possibleAnswers[id];
 
   if (!answer) {
-    return res.status(404).json({});
+    return res.status(404).json({ error: "invalid id" });
   }
 
   const results = {};
@@ -54,7 +89,7 @@ const gameRoute = (req, res) => {
   const wordsArray = words.toLowerCase().split(",");
 
   wordsArray.forEach((word) => {
-    results[word] = validateWord(word, answer, supportAccents);
+    results[word] = validateWord(database, word, answer, supportAccents);
   });
 
   res.json({

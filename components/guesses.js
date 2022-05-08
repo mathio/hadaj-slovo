@@ -25,7 +25,7 @@ const GuessRow = ({ word = "", results = {}, error, gameEnded }) => {
       </ul>
       {error && (
         <div className={styles.error}>
-          <span>Toto slovo nemáme v databáze.</span>
+          <span>Unknown word</span>
         </div>
       )}
     </div>

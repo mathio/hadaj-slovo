@@ -1,7 +1,9 @@
-# Hádaj slovo
+# Le Word / Hádaj slovo
 
-🇸🇰 Slovenská open-source verzia [Wordle](https://www.powerlanguage.co.uk/wordle/).
+🏴‍☠️ Multi-language open-source version of [Wordle](https://www.powerlanguage.co.uk/wordle/).
 
-📖 Databáza obsahuje [vybrané slová](./scripts/dictionary.mjs) zo [slovníka slovenského jazyka](https://github.com/BramboraSK/slovnik-slovenskeho-jazyka).
+📖 Databases for languages:
+- 🇸🇰 [selected words](./scripts/dictionary.mjs) from [Slovak language dictionary](https://github.com/BramboraSK/slovnik-slovenskeho-jazyka).
+- 🇬🇧 all words from [original Wordle game](https://www.powerlanguage.co.uk/wordle/)
 
-🖥 Beží na Heroku: [slovo.w2.sk](https://slovo.w2.sk/)
+🖥 Deployed on Vercel: [slovo.w2.sk](https://slovo.w2.sk/)
